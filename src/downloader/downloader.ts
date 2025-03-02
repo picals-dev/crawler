@@ -2,6 +2,10 @@ import { download_config } from '~/configs/index.ts'
 import { assertError, printInfo } from '~/utils/logMessage.ts'
 import { downloadImage } from './download_image.ts'
 
+/**
+ * Configuration for the Downloader class
+ * @interface
+ */
 interface DownloaderConfig {
   /** The download capacity in MB. */
   capacity: number
@@ -10,20 +14,37 @@ interface DownloaderConfig {
 }
 
 export class Downloader implements DownloaderConfig {
+  /** @inheritdoc */
   public capacity: number
+  /** @inheritdoc */
   public urlGroup: Set<string>
 
+  /**
+   * Creates an instance of Downloader with the provided download capacity.
+   *
+   * @param capacity - The download capacity in MB.
+   */
   constructor(capacity: number) {
     this.capacity = capacity
     this.urlGroup = new Set()
   }
 
+  /**
+   * Add URLs to the download queue.
+   *
+   * @param urls - URLs to add to the download queue.
+   */
   add(urls: string[]): void {
     for (const url of urls) {
       this.urlGroup.add(url)
     }
   }
 
+  /**
+   * Download images from the URL group.
+   *
+   * @returns The total download traffic in MB.
+   */
   async download(): Promise<number | string[]> {
     if (download_config.url_only) {
       return Array.from(this.urlGroup)
@@ -51,7 +72,7 @@ export class Downloader implements DownloaderConfig {
       downloadQueue.push(task)
     }
 
-    await Promise.allSettled(downloadQueue) // 确保所有下载任务都执行
+    await Promise.allSettled(downloadQueue)
 
     printInfo('========== Downloading complete ==========')
     return downloadTraffic
