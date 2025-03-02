@@ -10,6 +10,13 @@ import { assertError, assertWarn, printInfo } from '~/utils/logMessage.ts'
 import { sleep } from '~/utils/sleep.ts'
 import { writeFailLog } from '~/utils/writeFailLog.ts'
 
+/**
+ * Download an image from the given URL
+ *
+ * @param url - URL of the image to download
+ * @param initialTimeout - Initial timeout for the download (seconds)
+ * @returns Size of the downloaded image (MB)
+ */
 export async function downloadImage(url: string, initialTimeout: number = 10): Promise<number> {
   // 1. Extract image name & image ID from URL
   const imageName = url.split('/').pop()
