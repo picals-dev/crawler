@@ -4,10 +4,10 @@
  */
 interface UserConfigOptions {
   /** The Pixiv user ID, found in the profile URL (e.g., https://www.pixiv.net/users/xxxx). */
-  readonly user_id: string
+  readonly user_id?: string
 
   /** The authentication cookie, obtainable via browser developer tools, or null if not available. */
-  readonly cookie: string | null
+  readonly cookie?: string | null
 }
 
 /**
@@ -29,8 +29,8 @@ export class UserConfig implements UserConfigOptions {
    *
    * @param {UserConfigOptions} options - The configuration options containing user ID and cookie.
    */
-  constructor(options: UserConfigOptions) {
-    this.user_id = options.user_id
-    this.cookie = options.cookie
+  constructor(options: UserConfigOptions = {}) {
+    this.user_id = options.user_id ?? ''
+    this.cookie = options.cookie ?? ''
   }
 }
