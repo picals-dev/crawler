@@ -4,9 +4,9 @@
  */
 interface DebugConfigOptions {
   /** Whether to enable verbose logging. */
-  readonly verbose?: boolean
+  verbose?: boolean
   /** Whether to show error messages. */
-  readonly show_error?: boolean
+  show_error?: boolean
 }
 
 /**
@@ -18,9 +18,9 @@ interface DebugConfigOptions {
  */
 export class DebugConfig implements DebugConfigOptions {
   /** @inheritdoc */
-  readonly verbose: boolean
+  public verbose: boolean
   /** @inheritdoc */
-  readonly show_error: boolean
+  public show_error: boolean
 
   /**
    * Creates an instance of DebugConfig with the provided options.

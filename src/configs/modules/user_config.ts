@@ -4,10 +4,10 @@
  */
 interface UserConfigOptions {
   /** The Pixiv user ID, found in the profile URL (e.g., https://www.pixiv.net/users/xxxx). */
-  readonly user_id?: string
+  user_id?: string
 
   /** The authentication cookie, obtainable via browser developer tools, or null if not available. */
-  readonly cookie?: string | null
+  cookie?: string | null
 }
 
 /**
@@ -19,10 +19,10 @@ interface UserConfigOptions {
  */
 export class UserConfig implements UserConfigOptions {
   /** @inheritdoc */
-  readonly user_id: string
+  public user_id: string
 
   /** @inheritdoc */
-  readonly cookie: string | null
+  public cookie: string | null
 
   /**
    * Creates an instance of UserConfig with the provided options.

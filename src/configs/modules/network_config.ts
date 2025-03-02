@@ -7,16 +7,16 @@ interface NetworkConfigOptions {
    * Proxy settings for network requests, keyed by protocol (e.g., 'http', 'https').
    * @example { http: 'http://proxy.example.com:8080' }
    */
-  readonly proxy?: ProxyConfig
+  proxy?: ProxyConfig
 
   /**
    * HTTP headers to include in network requests.
    * @example { 'Content-Type': 'application/json' }
    */
-  readonly headers?: HeaderConfig
+  headers?: HeaderConfig
 }
 
-type ProxyProtocol = 'http' | 'https' | 'socks5'
+type ProxyProtocol = 'http' | 'https'
 type ProxyConfig = Partial<Record<ProxyProtocol, string>>
 type HeaderConfig = Record<string, string>
 
@@ -36,10 +36,10 @@ const DEFAULT_NETWORK_CONFIG = {
  */
 export class NetworkConfig implements NetworkConfigOptions {
   /** @inheritdoc */
-  readonly proxy: ProxyConfig
+  public proxy: ProxyConfig
 
   /** @inheritdoc */
-  readonly headers: HeaderConfig
+  public headers: HeaderConfig
 
   /**
    * Creates an instance of NetworkConfig with the provided options.
