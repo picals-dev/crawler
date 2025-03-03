@@ -12,6 +12,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
+  "dependencies": {
+    "async-mutex": "^0.5.0",
+    "chalk": "^5.4.1",
+    "cheerio": "^1.0.0",
+    "dayjs": "^1.11.13",
+    "got": "^14.4.6",
+    "hpagent": "^1.2.0",
+    "http-status-codes": "^2.3.0"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^4.3.0",
     "@types/jest": "^29.5.14",
@@ -22,14 +31,5 @@
     "rolldown": "1.0.0-beta.3",
     "ts-jest": "^29.2.6",
     "typescript": "^5.8.2"
-  },
-  "dependencies": {
-    "async-mutex": "^0.5.0",
-    "chalk": "^5.4.1",
-    "cheerio": "^1.0.0",
-    "dayjs": "^1.11.13",
-    "got": "^14.4.6",
-    "hpagent": "^1.2.0",
-    "http-status-codes": "^2.3.0"
   }
 }
