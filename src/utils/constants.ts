@@ -1,0 +1,1 @@
+export const BOOKMARK_URL = "https://www.pixiv.net/bookmark.php?type=user"

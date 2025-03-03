@@ -19,7 +19,8 @@
     "dayjs": "^1.11.13",
     "got": "^14.4.6",
     "hpagent": "^1.2.0",
-    "http-status-codes": "^2.3.0"
+    "http-status-codes": "^2.3.0",
+    "p-limit": "^6.2.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.3.0",

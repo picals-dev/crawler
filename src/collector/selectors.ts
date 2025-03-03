@@ -3,7 +3,9 @@ import * as cheerio from 'cheerio'
 import { assertError } from '~/utils/logMessage.ts'
 import { writeFailLog } from '~/utils/writeFailLog.ts'
 
-export function selectTag(response: Response): string[] {
+export type Selector = (response: Response) => string[]
+
+export const selectTag: Selector = (response) => {
   const match = response.url.match(/artworks\/(\d+)/)
   if (!match) {
     assertError(false, `Bad response in selectTag for URL: ${response.url}`)
@@ -22,13 +24,13 @@ export function selectTag(response: Response): string[] {
   return tagsData.map((tag: any) => tag.translation ? tag.translation.en : tag.tag)
 }
 
-export function selectPage(response: Response): Set<string> {
+export const selectPage: Selector = (response) => {
   const group = new Set<string>()
 
   try {
     const body = JSON.parse(response.body as string)
     if (!body || !body.body)
-      return group
+      return Array.from(group)
     for (const item of body.body) {
       if (item.urls?.original) {
         group.add(item.urls.original)
@@ -39,10 +41,10 @@ export function selectPage(response: Response): Set<string> {
     assertError(false, `Failed to parse response body: ${error}`)
   }
 
-  return group
+  return Array.from(group)
 }
 
-export function selectUser(response: Response): Set<string> {
+export const selectUser: Selector = (response) => {
   const group = new Set<string>()
 
   try {
@@ -55,16 +57,16 @@ export function selectUser(response: Response): Set<string> {
     assertError(false, `Failed to parse response body: ${error}`)
   }
 
-  return group
+  return Array.from(group)
 }
 
-export function selectBookmark(response: Response): Set<string> {
+export const selectBookmark: Selector = (response) => {
   const group = new Set<string>()
 
   try {
     const body = JSON.parse(response.body as string)
     if (!body || !body.body || !body.body.works)
-      return group
+      return Array.from(group)
     for (const artwork of body.body.works) {
       const workId = artwork.id
       if (typeof workId === 'string') {
@@ -79,16 +81,16 @@ export function selectBookmark(response: Response): Set<string> {
     assertError(false, `Failed to parse response body: ${error}`)
   }
 
-  return group
+  return Array.from(group)
 }
 
-export function selectKeyword(response: Response): Set<string> {
+export const selectKeyword: Selector = (response) => {
   const group = new Set<string>()
 
   try {
     const body = JSON.parse(response.body as string)
     if (!body || !body.body || !body.body.illustManga || !body.body.illustManga.data)
-      return group
+      return Array.from(group)
     for (const artwork of body.body.illustManga.data) {
       group.add(artwork.id)
     }
@@ -97,5 +99,5 @@ export function selectKeyword(response: Response): Set<string> {
     assertError(false, `Failed to parse response body: ${error}`)
   }
 
-  return group
+  return Array.from(group)
 }
