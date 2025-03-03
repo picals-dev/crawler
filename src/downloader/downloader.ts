@@ -1,3 +1,4 @@
+import pLimit from 'p-limit'
 import { download_config } from '~/configs/index.ts'
 import { assertError, printInfo } from '~/utils/logMessage.ts'
 import { downloadImage } from './download_image.ts'
@@ -45,7 +46,7 @@ export class Downloader implements DownloaderConfig {
    *
    * @returns The total download traffic in MB.
    */
-  async download(): Promise<number | string[]> {
+  async download() {
     if (download_config.url_only) {
       return Array.from(this.urlGroup)
     }
@@ -54,25 +55,22 @@ export class Downloader implements DownloaderConfig {
 
     printInfo('========== Downloader start ==========')
 
-    const urlArray = Array.from(this.urlGroup)
-    const downloadQueue: Promise<number>[] = []
+    const limit = pLimit(download_config.num_threads)
 
-    for (const url of urlArray) {
-      const task = downloadImage(url).then((size) => {
-        downloadTraffic += size
+    const urls = Array.from(this.urlGroup)
+    const tasks = urls.map(url =>
+      limit(async () => {
+        const imageSize = await downloadImage(url)
+        downloadTraffic += imageSize
         printInfo(`Downloading: ${downloadTraffic.toFixed(2)} MB`)
-
         if (downloadTraffic > this.capacity) {
           assertError(false, '🚨 Download capacity reached! Stopping further downloads.')
         }
+        return imageSize
+      }),
+    )
 
-        return size
-      })
-
-      downloadQueue.push(task)
-    }
-
-    await Promise.allSettled(downloadQueue)
+    await Promise.allSettled(tasks)
 
     printInfo('========== Downloading complete ==========')
     return downloadTraffic

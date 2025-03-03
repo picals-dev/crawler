@@ -7,7 +7,7 @@ interface UserConfigOptions {
   user_id?: string
 
   /** The authentication cookie, obtainable via browser developer tools, or null if not available. */
-  cookie?: string | null
+  cookie?: string
 }
 
 /**
@@ -22,7 +22,7 @@ export class UserConfig implements UserConfigOptions {
   public user_id: string
 
   /** @inheritdoc */
-  public cookie: string | null
+  public cookie: string
 
   /**
    * Creates an instance of UserConfig with the provided options.
