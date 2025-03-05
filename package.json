@@ -24,6 +24,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.3.0",
+    "@rollup/plugin-alias": "^5.1.1",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.8",
     "eslint": "^9.21.0",
