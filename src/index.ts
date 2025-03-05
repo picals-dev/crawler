@@ -12,7 +12,7 @@ export async function downloadBookmark() {
   displayAllConfigs()
   checkPath(download_config.store_path)
 
-  const targetCrawler = new BookmarkCrawler(20, 200)
+  const targetCrawler = new BookmarkCrawler({ imageNum: 20, capacity: 200 })
   await targetCrawler.run()
 }
 
@@ -24,7 +24,7 @@ export async function downloadUser() {
   displayAllConfigs()
   checkPath(download_config.store_path)
 
-  const targetCrawler = new UserCrawler('32548944', 200)
+  const targetCrawler = new UserCrawler({ artistId: '12345678', capacity: 200 })
   await targetCrawler.run()
 }
 
@@ -36,13 +36,13 @@ export async function downloadKeyword() {
   displayAllConfigs()
   checkPath(download_config.store_path)
 
-  const targetCrawler = new KeywordCrawler(
-    '(Lucy OR 边缘行者) AND (5000users OR 10000users)',
-    false,
-    'all',
-    20,
-    200,
-  )
+  const targetCrawler = new KeywordCrawler({
+    keyword: '(Lucy OR 边缘行者) AND (5000users OR 10000users)',
+    order: false,
+    mode: 'all',
+    imageNum: 20,
+    capacity: 200,
+  })
   await targetCrawler.run()
 }
 

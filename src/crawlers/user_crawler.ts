@@ -13,12 +13,17 @@ interface IUserCrawler {
   run: () => Promise<string[] | number>
 }
 
+interface UserCrawlerOptions {
+  artistId: string
+  capacity?: number
+}
+
 export class UserCrawler implements IUserCrawler {
   public artistId: string
   public downloader: Downloader
   public collector: Collector
 
-  constructor(artistId: string, capacity: number = 1024) {
+  constructor({ artistId, capacity = 1024 }: UserCrawlerOptions) {
     this.artistId = artistId
     this.downloader = new Downloader(capacity)
     this.collector = new Collector(this.downloader)

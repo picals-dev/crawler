@@ -18,6 +18,14 @@ interface IKeywordCrawler {
   run: () => Promise<number | string[]>
 }
 
+interface KeywordCrawlerOptions {
+  keyword: string
+  order: boolean
+  mode: string
+  imageNum: number
+  capacity?: number
+}
+
 export class KeywordCrawler implements IKeywordCrawler {
   public keyword: string
   public order: boolean
@@ -27,7 +35,7 @@ export class KeywordCrawler implements IKeywordCrawler {
   public downloader: Downloader
   public collector: Collector
 
-  constructor(keyword: string, order: boolean, mode: string, imageNum: number, capacity: number) {
+  constructor({ keyword, order, mode, imageNum, capacity = 1024 }: KeywordCrawlerOptions) {
     this.keyword = keyword
     this.order = order
     this.mode = mode

@@ -22,6 +22,11 @@ interface IBookmarkCrawler {
   run: () => Promise<string[] | number>
 }
 
+interface BookmarkCrawlerOptions {
+  imageNum: number
+  capacity?: number
+}
+
 export class BookmarkCrawler implements IBookmarkCrawler {
   public imageNum: number
   public userId: string
@@ -29,7 +34,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
   public downloader: Downloader
   public collector: Collector
 
-  constructor(imageNum: number, capacity: number = 1024) {
+  constructor({ imageNum, capacity = 1024 }: BookmarkCrawlerOptions) {
     this.imageNum = imageNum
     this.userId = user_config.user_id
     this.userUrl = `https://www.pixiv.net/ajax/user/${this.userId}/illusts`
