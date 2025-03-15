@@ -1,54 +1,66 @@
-import { displayAllConfigs, download_config, network_config, user_config } from './configs/index.ts'
+import type { BookmarkCrawlerOptions } from './crawlers/bookmark_crawler.ts'
+import type { KeywordCrawlerOptions } from './crawlers/keyword_crawler.ts'
+import type { UserCrawlerOptions } from './crawlers/user_crawler.ts'
 import { BookmarkCrawler } from './crawlers/bookmark_crawler.ts'
 import { KeywordCrawler } from './crawlers/keyword_crawler.ts'
 import { UserCrawler } from './crawlers/user_crawler.ts'
-import { checkPath } from './utils/checkPath.ts'
 
-export async function downloadBookmark() {
-  download_config.with_tag = false
-  user_config.user_id = ''
-  user_config.cookie = ''
-
-  displayAllConfigs()
-  checkPath(download_config.store_path)
-
-  const targetCrawler = new BookmarkCrawler({ imageNum: 20, capacity: 200 })
+/**
+ * 下载用户收藏的作品
+ *
+ * 该函数创建一个书签爬虫实例，用于爬取并下载当前用户收藏的作品。
+ * 可以通过参数控制下载的图片数量和下载器容量。
+ *
+ * @param {object} options - 书签爬虫配置选项
+ * @param {number} options.imageNum - 要下载的图片数量
+ * @param {number} options.capacity - 最大下载器的容量，单位为 MB，默认为 1024。若不限制容量，则设置为 -1
+ * @returns {Promise<void>} 不返回任何值的Promise
+ */
+export async function downloadBookmark({ imageNum, capacity }: BookmarkCrawlerOptions): Promise<void> {
+  const targetCrawler = new BookmarkCrawler({ imageNum, capacity })
   await targetCrawler.run()
 }
 
-export async function downloadUser() {
-  user_config.user_id = ''
-  user_config.cookie = ''
-  download_config.with_tag = false
-
-  displayAllConfigs()
-  checkPath(download_config.store_path)
-
-  const targetCrawler = new UserCrawler({ artistId: '12345678', capacity: 200 })
-  await targetCrawler.run()
+/**
+ * 下载指定用户的所有作品
+ *
+ * 该函数创建一个用户爬虫实例，用于爬取并下载指定艺术家 ID 的所有作品。
+ * 如果下载成功，将在控制台输出下载的文件路径列表。
+ *
+ * @param {object} options - 用户爬虫配置选项
+ * @param {string} options.artistId - 要下载作品的艺术家 ID
+ * @param {number} options.capacity - 最大下载器的容量，单位为 MB，默认为 2048。若不限制容量，则设置为 -1
+ * @returns {Promise<void>} 不返回任何值的Promise
+ */
+export async function downloadUser({ artistId, capacity }: UserCrawlerOptions): Promise<void> {
+  const targetCrawler = new UserCrawler({ artistId, capacity })
+  const value = await targetCrawler.run()
+  if (Array.isArray(value)) {
+    console.log(value)
+  }
 }
 
-export async function downloadKeyword() {
-  user_config.user_id = ''
-  user_config.cookie = ''
-  download_config.with_tag = false
-
-  displayAllConfigs()
-  checkPath(download_config.store_path)
-
+/**
+ * 根据关键词下载作品
+ *
+ * 该函数创建一个关键词爬虫实例，用于爬取并下载符合特定关键词条件的作品。
+ * 可以通过参数控制关键词、排序方式、模式、下载数量和下载器容量。
+ *
+ * @param {object} options - 关键词爬虫配置选项
+ * @param {string} options.keyword - 搜索关键词，支持复杂查询语法
+ * @param {boolean} options.order - 排序方式，默认为 false
+ * @param {string} options.mode - 搜索模式，如 'all'、'safe' 等
+ * @param {number} options.imageNum - 要下载的图片数量
+ * @param {number} options.capacity - 最大下载器的容量，单位为 MB，默认为 2048。若不限制容量，则设置为 -1
+ * @returns {Promise<void>} 不返回任何值的Promise
+ */
+export async function downloadKeyword({ keyword, order, mode, imageNum, capacity }: KeywordCrawlerOptions): Promise<void> {
   const targetCrawler = new KeywordCrawler({
-    keyword: '(Lucy OR 边缘行者) AND (5000users OR 10000users)',
-    order: false,
-    mode: 'all',
-    imageNum: 20,
-    capacity: 200,
+    keyword,
+    order,
+    mode,
+    imageNum,
+    capacity,
   })
   await targetCrawler.run()
 }
-
-function bootstrap() {
-  network_config.proxy = {}
-  downloadUser()
-}
-
-bootstrap()

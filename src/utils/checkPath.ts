@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import process from 'node:process'
 
 interface PathCheckResult {
   exists: boolean
@@ -8,12 +9,12 @@ interface PathCheckResult {
 }
 
 export async function checkPath(dirPath: string): Promise<PathCheckResult> {
-  if (!path.isAbsolute(dirPath)) {
-    throw new Error('The path must be absolute')
-  }
+  const absolutePath = path.isAbsolute(dirPath)
+    ? dirPath
+    : path.resolve(process.cwd(), dirPath)
 
   try {
-    const stats = await fs.stat(dirPath)
+    const stats = await fs.stat(absolutePath)
     return {
       exists: true,
       isFile: stats.isFile(),

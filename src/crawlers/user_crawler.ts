@@ -13,7 +13,7 @@ interface IUserCrawler {
   run: () => Promise<string[] | number>
 }
 
-interface UserCrawlerOptions {
+export interface UserCrawlerOptions {
   artistId: string
   capacity?: number
 }
@@ -23,13 +23,14 @@ export class UserCrawler implements IUserCrawler {
   public downloader: Downloader
   public collector: Collector
 
-  constructor({ artistId, capacity = 1024 }: UserCrawlerOptions) {
+  constructor({ artistId, capacity = 2048 }: UserCrawlerOptions) {
     this.artistId = artistId
     this.downloader = new Downloader(capacity)
     this.collector = new Collector(this.downloader)
   }
 
   async collect() {
+    printInfo(`========== Collecting user ${this.artistId} ==========`)
     const artistUrl = `https://www.pixiv.net/ajax/user/${this.artistId}/profile/all?lang=zh`
     const additionalHeaders = {
       'Referer': `https://www.pixiv.net/users/${this.artistId}/illustrations`,

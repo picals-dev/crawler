@@ -2,6 +2,10 @@
  * Configuration options for downloading images.
  * @interface
  */
+import path from 'node:path'
+
+export const DEFAULT_STORE_PATH = path.join(__dirname, '../../../images')
+
 interface DownloadConfigOptions {
   /** Timeout for requests */
   timeout?: number
@@ -27,7 +31,7 @@ const DEFAULT_DOWNLOAD_CONFIG: Required<DownloadConfigOptions> = {
   timeout: 4,
   retry_times: 10,
   fail_delay: 1,
-  store_path: './images',
+  store_path: DEFAULT_STORE_PATH,
   with_tag: true,
   url_only: false,
   num_threads: 12,

@@ -17,7 +17,7 @@ import { writeFailLog } from '~/utils/writeFailLog.ts'
  * @param initialTimeout - Initial timeout for the download (seconds)
  * @returns Size of the downloaded image (MB)
  */
-export async function downloadImage(url: string, initialTimeout: number = 10): Promise<number> {
+export async function downloadImage(url: string, initialTimeout: number = 120): Promise<number> {
   // 1. Extract image name & image ID from URL
   const imageName = url.split('/').pop()
   if (!imageName) {

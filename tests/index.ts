@@ -1,10 +1,15 @@
-import got from 'got'
-import { writeFailLog } from '~/utils/writeFailLog.ts'
+import fs from 'node:fs/promises'
 
-const TEST_URL = 'https://www.pixiv.net/en/artworks/121154856'
+// 创建一个简单的 demo.txt 文件
+async function createDemoFile() {
+  await fs.writeFile('images/demo.txt', 'Hello, world!')
+}
 
-const response = got(TEST_URL)
+// 读取 demo.txt 文件
+async function readDemoFile() {
+  const res = await fs.readFile('images/demo.txt', 'utf-8')
+  console.log(res)
+}
 
-response.then((res) => {
-  writeFailLog(res.body)
-})
+createDemoFile()
+readDemoFile()

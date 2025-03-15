@@ -63,7 +63,7 @@ export class Downloader implements DownloaderConfig {
         const imageSize = await downloadImage(url)
         downloadTraffic += imageSize
         printInfo(`Downloading: ${downloadTraffic.toFixed(2)} MB`)
-        if (downloadTraffic > this.capacity) {
+        if (this.capacity !== -1 && downloadTraffic > this.capacity) {
           assertError(false, '🚨 Download capacity reached! Stopping further downloads.')
         }
         return imageSize

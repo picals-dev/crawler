@@ -18,7 +18,7 @@ interface IKeywordCrawler {
   run: () => Promise<number | string[]>
 }
 
-interface KeywordCrawlerOptions {
+export interface KeywordCrawlerOptions {
   keyword: string
   order: boolean
   mode: string

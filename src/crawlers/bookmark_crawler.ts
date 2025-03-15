@@ -22,7 +22,7 @@ interface IBookmarkCrawler {
   run: () => Promise<string[] | number>
 }
 
-interface BookmarkCrawlerOptions {
+export interface BookmarkCrawlerOptions {
   imageNum: number
   capacity?: number
 }
