@@ -48,16 +48,16 @@ export class Downloader implements DownloaderConfig {
    */
   async download() {
     if (download_config.url_only) {
-      return Array.from(this.urlGroup)
+      return Array.from(this.urlGroup).reverse()
     }
 
     let downloadTraffic = 0
 
     printInfo('========== Downloader start ==========')
 
-    const limit = pLimit(download_config.num_threads)
+    const limit = pLimit(download_config.num_concurrent)
 
-    const urls = Array.from(this.urlGroup)
+    const urls = Array.from(this.urlGroup).reverse()
     const tasks = urls.map(url =>
       limit(async () => {
         const imageSize = await downloadImage(url)

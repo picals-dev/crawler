@@ -1,6 +1,4 @@
-import type { Agents } from 'got'
 import got from 'got'
-import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent'
 import { StatusCodes } from 'http-status-codes'
 import pLimit from 'p-limit'
 import { Collector } from '~/collector/collector.ts'
@@ -50,13 +48,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
 
     for (let i = 0; i < download_config.retry_times; i++) {
       try {
-        const agent: Agents | undefined = network_config.proxy.http
-          ? { http: new HttpProxyAgent({ proxy: network_config.proxy.http }) }
-          : network_config.proxy.https
-            ? { https: new HttpsProxyAgent({ proxy: network_config.proxy.https }) }
-            : undefined
-
-        const response = await got(url, { headers, agent, timeout: { connect: download_config.timeout } })
+        const response = await got(url, { headers, agent: network_config.agent, timeout: { connect: download_config.timeout } })
 
         if (response.statusCode === StatusCodes.OK) {
           const body = JSON.parse(response.body)
@@ -87,7 +79,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
       urls.add(url)
       const additionalHeaders = { COOKIE: user_config.cookie }
 
-      const limit = pLimit(download_config.num_threads)
+      const limit = pLimit(download_config.num_concurrent)
       const tasks = Array.from(urls).map(url =>
         limit(async () => {
           try {

@@ -1,18 +1,18 @@
 /**
- * Options for configuring a Pixiv user.
+ * 用户配置选项。
  * @interface
  */
 interface UserConfigOptions {
-  /** The Pixiv user ID, found in the profile URL (e.g., https://www.pixiv.net/users/xxxx). */
+  /** 用户 ID，在个人资料 URL 中找到（例如，https://www.pixiv.net/users/xxxx）。 */
   user_id?: string
 
-  /** The authentication cookie, obtainable via browser developer tools, or null if not available. */
+  /** 认证 cookie，可通过浏览器开发者工具获取，或为空。 */
   cookie?: string
 }
 
 /**
- * Represents a user's configuration for accessing Pixiv API.
- * This class encapsulates the user ID and cookie required for authentication.
+ * 表示用于访问 Pixiv API 的用户配置。
+ * 此类封装了用户 ID 和 cookie 所需的认证。
  *
  * @class
  * @implements {UserConfigOptions}
@@ -25,9 +25,9 @@ export class UserConfig implements UserConfigOptions {
   public cookie: string
 
   /**
-   * Creates an instance of UserConfig with the provided options.
+   * 使用提供的选项创建 UserConfig 实例。
    *
-   * @param {UserConfigOptions} options - The configuration options containing user ID and cookie.
+   * @param {UserConfigOptions} options - 包含用户 ID 和 cookie 的配置选项。
    */
   constructor(options: UserConfigOptions = {}) {
     this.user_id = options.user_id ?? ''

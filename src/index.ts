@@ -4,6 +4,7 @@ import type { UserCrawlerOptions } from './crawlers/user_crawler.ts'
 import { BookmarkCrawler } from './crawlers/bookmark_crawler.ts'
 import { KeywordCrawler } from './crawlers/keyword_crawler.ts'
 import { UserCrawler } from './crawlers/user_crawler.ts'
+import { printObj } from './utils/printObj.ts'
 
 /**
  * 下载用户收藏的作品
@@ -34,9 +35,11 @@ export async function downloadBookmark({ imageNum, capacity }: BookmarkCrawlerOp
  */
 export async function downloadUser({ artistId, capacity }: UserCrawlerOptions): Promise<void> {
   const targetCrawler = new UserCrawler({ artistId, capacity })
-  const value = await targetCrawler.run()
-  if (Array.isArray(value)) {
-    console.log(value)
+  const res = await targetCrawler.run()
+
+  // 如果 res 是数组，则打印
+  if (Array.isArray(res)) {
+    printObj(res, 2, 'Downloaded images:')
   }
 }
 

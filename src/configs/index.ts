@@ -4,7 +4,7 @@ import { DownloadConfig } from './modules/download_config.ts'
 import { NetworkConfig } from './modules/network_config.ts'
 import { UserConfig } from './modules/user_config.ts'
 
-// Export instances of each config class (singleton pattern)
+// 导出每个配置类的实例（单例模式）
 export const debug_config = new DebugConfig()
 export const download_config = new DownloadConfig()
 export const network_config = new NetworkConfig()

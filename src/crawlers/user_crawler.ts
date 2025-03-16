@@ -30,7 +30,7 @@ export class UserCrawler implements IUserCrawler {
   }
 
   async collect() {
-    printInfo(`========== Collecting user ${this.artistId} ==========`)
+    printInfo(`========== Collecting user ${this.artistId}'s works ==========`)
     const artistUrl = `https://www.pixiv.net/ajax/user/${this.artistId}/profile/all?lang=zh`
     const additionalHeaders = {
       'Referer': `https://www.pixiv.net/users/${this.artistId}/illustrations`,
@@ -41,7 +41,7 @@ export class UserCrawler implements IUserCrawler {
     if (imageIds) {
       this.collector.add(imageIds)
     }
-    printInfo(`========== Collected user ${this.artistId} ==========`)
+    printInfo(`========== Collected user ${this.artistId}'s works ==========`)
   }
 
   async run() {

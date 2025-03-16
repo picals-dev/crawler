@@ -2,7 +2,7 @@ import type { Downloader } from '~/downloader/downloader.ts'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import pLimit from 'p-limit'
-import { download_config, user_config } from '~/configs/index.ts'
+import { debug_config, download_config, user_config } from '~/configs/index.ts'
 import { BOOKMARK_URL } from '~/utils/constants.ts'
 import { assertWarn, printInfo } from '~/utils/logMessage.ts'
 import { collect } from './collector_unit.ts'
@@ -43,12 +43,14 @@ export class Collector implements ICollector {
       url: `https://www.pixiv.net/artworks/${illustId}`,
     }))
 
-    const limit = pLimit(download_config.num_threads)
+    const limit = pLimit(download_config.num_concurrent)
     const tasks = urls.map(({ illustId, url }) =>
       limit(async () => {
         try {
           const tagList = await collect(url, selectTag, additionalHeaders)
-          printInfo(`Tags collected for ${illustId}`)
+          if (debug_config.verbose) {
+            printInfo(`Tags collected for ${illustId}`)
+          }
           return { illustId, tagList }
         }
         catch (error) {
@@ -89,7 +91,7 @@ export class Collector implements ICollector {
       'x-user-id': user_config.user_id,
     }))
 
-    const limit = pLimit(download_config.num_threads)
+    const limit = pLimit(download_config.num_concurrent)
     const tasks = urls.map(({ illustId, url }, index) =>
       limit(async () => {
         try {

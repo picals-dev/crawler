@@ -68,7 +68,7 @@ export class KeywordCrawler implements IKeywordCrawler {
     }
 
     const additionalHeaders = { COOKIE: user_config.cookie }
-    const limit = pLimit(download_config.num_threads)
+    const limit = pLimit(download_config.num_concurrent)
     const tasks = urls.map(url =>
       limit(async () => {
         const imageIds = await collect(url, selectKeyword, additionalHeaders)

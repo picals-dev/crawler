@@ -1,8 +1,6 @@
-import type { Agents } from 'got'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import got from 'got'
-import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent'
 import { StatusCodes } from 'http-status-codes'
 import { debug_config, download_config, network_config } from '~/configs/index.ts'
 import { checkPath } from '~/utils/checkPath.ts'
@@ -17,7 +15,7 @@ import { writeFailLog } from '~/utils/writeFailLog.ts'
  * @param initialTimeout - Initial timeout for the download (seconds)
  * @returns Size of the downloaded image (MB)
  */
-export async function downloadImage(url: string, initialTimeout: number = 120): Promise<number> {
+export async function downloadImage(url: string, initialTimeout: number = 10000): Promise<number> {
   // 1. Extract image name & image ID from URL
   const imageName = url.split('/').pop()
   if (!imageName) {
@@ -38,13 +36,14 @@ export async function downloadImage(url: string, initialTimeout: number = 120): 
   if (debug_config.verbose) {
     printInfo(`Downloading image: ${imageName}`)
   }
-  await sleep(download_config.thread_delay)
+
+  await sleep(download_config.start_delay)
 
   // 3. Check if the image already exists
   const imagePath = path.join(download_config.store_path, imageName!)
   const checkPathRes = await checkPath(imagePath)
   if (checkPathRes.exists) {
-    assertWarn(!debug_config.verbose, `Image ${imageName} already exists.`)
+    assertWarn(!debug_config.verbose, `Image ${imageName} already exists, skipping...`)
     return 0
   }
 
@@ -52,19 +51,13 @@ export async function downloadImage(url: string, initialTimeout: number = 120): 
 
   for (let attempt = 0; attempt < download_config.retry_times; attempt++) {
     try {
-      const agent: Agents | undefined = network_config.proxy.http
-        ? { http: new HttpProxyAgent({ proxy: network_config.proxy.http }) }
-        : network_config.proxy.https
-          ? { https: new HttpsProxyAgent({ proxy: network_config.proxy.https }) }
-          : undefined
-
       const controller = new AbortController()
       // Cut off the download if it takes too long
-      const timeoutId = setTimeout(() => controller.abort(), downloadTimeout * 1000)
+      const timeoutId = setTimeout(() => controller.abort(), downloadTimeout)
 
       const response = await got(url, {
         headers,
-        agent,
+        agent: network_config.agent,
         timeout: { connect: download_config.timeout },
         signal: controller.signal,
         retry: { limit: 0 },
