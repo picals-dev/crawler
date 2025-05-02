@@ -1,5 +1,5 @@
 {
-  "name": "crawler",
+  "name": "@hana/pixiv-crawler",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@10.10.0",
