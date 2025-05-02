@@ -1,6 +1,6 @@
 import type { Response } from 'got'
 import * as cheerio from 'cheerio'
-import { assertError } from '~/utils/logMessage.ts'
+import { handleError } from '~/utils/handleError.ts'
 import { writeFailLog } from '~/utils/writeFailLog.ts'
 
 export type Selector = (response: Response) => string[]
@@ -8,7 +8,7 @@ export type Selector = (response: Response) => string[]
 export const selectTag: Selector = (response) => {
   const match = response.url.match(/artworks\/(\d+)/)
   if (!match) {
-    assertError(false, `Bad response in selectTag for URL: ${response.url}`)
+    handleError(new Error(`Bad response in selectTag for URL: ${response.url}`))
   }
 
   const workId = match![1]
@@ -16,7 +16,7 @@ export const selectTag: Selector = (response) => {
   const $ = cheerio.load(response.body as string)
   const metaContent = $('#meta-preload-data').attr('content')
   if (!metaContent) {
-    assertError(false, `Cannot find meta content in selectTag for URL: ${response.url}`)
+    handleError(new Error(`Cannot find meta content in selectTag for URL: ${response.url}`))
   }
   const content = JSON.parse(metaContent!)
   const tagsData = content.illust[workId].tags.tags
@@ -38,7 +38,7 @@ export const selectPage: Selector = (response) => {
     }
   }
   catch (error) {
-    assertError(false, `Failed to parse response body: ${error}`)
+    handleError(error, { prefix: 'Failed to parse response body: ' })
   }
 
   return Array.from(group)
@@ -54,7 +54,7 @@ export const selectUser: Selector = (response) => {
     }
   }
   catch (error) {
-    assertError(false, `Failed to parse response body: ${error}`)
+    handleError(error, { prefix: 'Failed to parse response body: ' })
   }
 
   return Array.from(group)
@@ -78,7 +78,7 @@ export const selectBookmark: Selector = (response) => {
     }
   }
   catch (error) {
-    assertError(false, `Failed to parse response body: ${error}`)
+    handleError(error, { prefix: 'Failed to parse response body: ' })
   }
 
   return Array.from(group)
@@ -96,7 +96,7 @@ export const selectKeyword: Selector = (response) => {
     }
   }
   catch (error) {
-    assertError(false, `Failed to parse response body: ${error}`)
+    handleError(error, { prefix: 'Failed to parse response body: ' })
   }
 
   return Array.from(group)

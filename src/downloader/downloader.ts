@@ -1,6 +1,7 @@
 import pLimit from 'p-limit'
 import { download_config } from '~/configs/index.ts'
-import { assertError, printInfo } from '~/utils/logMessage.ts'
+import { handleError } from '~/utils/handleError.ts'
+import { printInfo } from '~/utils/logMessage.ts'
 import { downloadImage } from './download_image.ts'
 
 /**
@@ -64,7 +65,7 @@ export class Downloader implements DownloaderConfig {
         downloadTraffic += imageSize
         printInfo(`Downloading: ${downloadTraffic.toFixed(2)} MB`)
         if (this.capacity !== -1 && downloadTraffic > this.capacity) {
-          assertError(false, '🚨 Download capacity reached! Stopping further downloads.')
+          handleError(new Error('Download capacity reached! Stopping further downloads.'))
         }
         return imageSize
       }),

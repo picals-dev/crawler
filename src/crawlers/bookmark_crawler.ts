@@ -1,12 +1,14 @@
-import got from 'got'
+import { error } from 'node:console'
 import { StatusCodes } from 'http-status-codes'
 import pLimit from 'p-limit'
+import { client } from '~/client/index.ts'
 import { Collector } from '~/collector/collector.ts'
 import { collect } from '~/collector/collector_unit.ts'
 import { selectBookmark } from '~/collector/selectors.ts'
 import { debug_config, download_config, network_config, user_config } from '~/configs/index.ts'
 import { Downloader } from '~/downloader/downloader.ts'
-import { assertError, assertWarn, printInfo } from '~/utils/logMessage.ts'
+import { handleError } from '~/utils/handleError.ts'
+import { printInfo, printWarn } from '~/utils/logMessage.ts'
 import { sleep } from '~/utils/sleep.ts'
 
 interface IBookmarkCrawler {
@@ -44,11 +46,11 @@ export class BookmarkCrawler implements IBookmarkCrawler {
     const url = `${this.userUrl}/bookmark/tags?lang=zh`
     printInfo('========== Bookmark crawler start ==========')
 
-    const headers = { ...network_config.headers, COOKIE: user_config.cookie }
+    const headers = { ...network_config.headers, Cookie: encodeURIComponent(user_config.cookie) }
 
     for (let i = 0; i < download_config.retry_times; i++) {
       try {
-        const response = await got(url, { headers, agent: network_config.agent, timeout: { connect: download_config.timeout } })
+        const response = await client(url, { headers, agent: network_config.agent, timeout: { connect: download_config.timeout } })
 
         if (response.statusCode === StatusCodes.OK) {
           const body = JSON.parse(response.body)
@@ -60,13 +62,13 @@ export class BookmarkCrawler implements IBookmarkCrawler {
         }
       }
       catch (error) {
-        assertWarn(!debug_config.show_error, `Failed to request count: ${error}`)
-        assertWarn(!debug_config.show_error, `Retry ${i + 1} times`)
+        printWarn(debug_config.show_error, `Failed to request count: ${error}`)
+        printWarn(debug_config.show_error, `Retry ${i + 1} times`)
         await sleep(download_config.fail_delay)
       }
     }
-    assertWarn(false, 'Please check your cookie configuration')
-    assertError(false, '========== Fail to get bookmark count ==========')
+    handleError(error, { exit: false, message: 'Please check your cookie configuration' })
+    handleError(error, { exit: false, message: '========== Fail to get bookmark count ==========' })
   }
 
   async collect(perJsonWorkCount: number = 48) {
@@ -77,7 +79,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
     for (let i = 0; i < pageCount; i++) {
       const url = `${this.userUrl}/bookmarks?tag=&offset=${i * perJsonWorkCount}&limit=${perJsonWorkCount}&rest=show&lang=zh`
       urls.add(url)
-      const additionalHeaders = { COOKIE: user_config.cookie }
+      const additionalHeaders = { Cookie: user_config.cookie }
 
       const limit = pLimit(download_config.num_concurrent)
       const tasks = Array.from(urls).map(url =>
@@ -89,7 +91,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
             }
           }
           catch (error) {
-            assertWarn(false, `Failed to collect bookmarks: ${error}`)
+            handleError(error, { exit: false, message: `Failed to collect bookmarks: ${error}` })
           }
         }),
       )

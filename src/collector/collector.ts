@@ -4,7 +4,8 @@ import path from 'node:path'
 import pLimit from 'p-limit'
 import { debug_config, download_config, user_config } from '~/configs/index.ts'
 import { BOOKMARK_URL } from '~/utils/constants.ts'
-import { assertWarn, printInfo } from '~/utils/logMessage.ts'
+import { handleError } from '~/utils/handleError.ts'
+import { printInfo } from '~/utils/logMessage.ts'
 import { collect } from './collector_unit.ts'
 import { selectPage, selectTag } from './selectors.ts'
 
@@ -54,7 +55,7 @@ export class Collector implements ICollector {
           return { illustId, tagList }
         }
         catch (error) {
-          assertWarn(false, `Failed to collect tags for ${illustId}: ${error}`)
+          handleError(error, { exit: false })
           return { illustId, tagList: [] }
         }
       }),
@@ -89,6 +90,7 @@ export class Collector implements ICollector {
     const additionalHeaders = artworkIds.map(illustId => ({
       'Referer': `https://www.pixiv.net/artworks/${illustId}`,
       'x-user-id': user_config.user_id,
+      'Cookie': user_config.cookie,
     }))
 
     const limit = pLimit(download_config.num_concurrent)
@@ -100,7 +102,7 @@ export class Collector implements ICollector {
           return imageUrls
         }
         catch (error) {
-          assertWarn(false, `Failed to collect image urls for artwork ${illustId}: ${error}`)
+          handleError(error, { exit: false, message: `Failed to collect image urls for artwork ${illustId}: ${error}` })
           return []
         }
       }),

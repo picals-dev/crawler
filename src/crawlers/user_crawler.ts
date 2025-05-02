@@ -35,7 +35,7 @@ export class UserCrawler implements IUserCrawler {
     const additionalHeaders = {
       'Referer': `https://www.pixiv.net/users/${this.artistId}/illustrations`,
       'x-user-id': user_config.user_id,
-      'COOKIE': user_config.cookie,
+      'Cookie': user_config.cookie,
     }
     const imageIds = await collect(artistUrl, selectUser, additionalHeaders)
     if (imageIds) {

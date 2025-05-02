@@ -67,7 +67,7 @@ export class KeywordCrawler implements IKeywordCrawler {
       urls.push(createUrl(i))
     }
 
-    const additionalHeaders = { COOKIE: user_config.cookie }
+    const additionalHeaders = { Cookie: user_config.cookie }
     const limit = pLimit(download_config.num_concurrent)
     const tasks = urls.map(url =>
       limit(async () => {
