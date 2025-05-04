@@ -9,15 +9,9 @@ import { printInfo, printWarn } from '~/utils/logMessage.ts'
 import { sleep } from '~/utils/sleep.ts'
 import { writeFailLog } from '~/utils/writeFailLog.ts'
 
-/**
- * Download an image from the given URL
- *
- * @param url - URL of the image to download
- * @param initialTimeout - Initial timeout for the download (seconds)
- * @returns Size of the downloaded image (MB)
- */
-export async function downloadImage(url: string, initialTimeout: number = 10000): Promise<number> {
-  // 1. Extract image name & image ID from URL
+// 根据 URL 下载图片
+export async function downloadImage(url: string, initialTimeout: number = 10000, targetPath: string): Promise<number> {
+  // 1. 从 URL 中提取图片名称和图片 ID
   const imageName = url.split('/').pop()
   if (!imageName) {
     handleError(new Error(`Cannot extract image name from URL: ${url}`))
@@ -27,7 +21,7 @@ export async function downloadImage(url: string, initialTimeout: number = 10000)
     handleError(new Error(`Bad URL in image downloader: ${url}`))
   }
 
-  // 2. Set headers for the request
+  // 2. 设置请求头
   const imageId = regRes![1]
   const headers = {
     Referer: `https://www.pixiv.net/artworks/${imageId}`,
@@ -40,8 +34,11 @@ export async function downloadImage(url: string, initialTimeout: number = 10000)
 
   await sleep(download_config.start_delay)
 
-  // 3. Check if the image already exists
-  const imagePath = path.join(download_config.store_path, imageName!)
+  // 3. 检查图片是否已经存在
+  const imagePath = path.join(targetPath, imageName!)
+  if (debug_config.verbose) {
+    printInfo(`当前图片的保存路径为：${imagePath}`)
+  }
   const checkPathRes = await checkPath(imagePath)
   if (checkPathRes.exists) {
     printWarn(debug_config.verbose, `Image ${imageName} already exists, skipping...`)
@@ -53,7 +50,7 @@ export async function downloadImage(url: string, initialTimeout: number = 10000)
   for (let attempt = 0; attempt < download_config.retry_times; attempt++) {
     try {
       const controller = new AbortController()
-      // Cut off the download if it takes too long
+      // 如果下载时间过长则中断下载
       const timeoutId = setTimeout(() => controller.abort(), downloadTimeout)
 
       const response = await client(url, {
@@ -68,7 +65,7 @@ export async function downloadImage(url: string, initialTimeout: number = 10000)
       if (response.statusCode === StatusCodes.OK) {
         const imageSize = Number.parseInt(response.headers['content-length'] || '0', 10)
 
-        // Check if the image size is correct
+        // 检查图片大小是否正确
         if (imageSize > 0 && response.rawBody.length !== imageSize) {
           printWarn(debug_config.show_error, `Image ${imageName} is incomplete, retrying...`)
           await sleep(download_config.fail_delay)

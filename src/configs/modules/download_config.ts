@@ -15,6 +15,8 @@ interface DownloadConfigOptions {
   store_path?: string
   /** 是否下载标签到单独的 JSON 文件 */
   with_tag?: boolean
+  /** 是否将多图作品下载到单独的目录中 */
+  with_dictionary?: boolean
   /** 只下载作品的 URL */
   url_only?: boolean
   /** 下载并发数 */
@@ -31,6 +33,7 @@ const DEFAULT_DOWNLOAD_CONFIG: Required<DownloadConfigOptions> = {
   fail_delay: 1000,
   store_path: DEFAULT_STORE_PATH,
   with_tag: true,
+  with_dictionary: false,
   url_only: false,
   num_concurrent: 12,
   start_delay: 1000,
@@ -56,6 +59,8 @@ export class DownloadConfig implements DownloadConfigOptions {
   /** @inheritdoc */
   public with_tag: boolean
   /** @inheritdoc */
+  public with_dictionary: boolean
+  /** @inheritdoc */
   public url_only: boolean
   /** @inheritdoc */
   public num_concurrent: number
@@ -75,6 +80,7 @@ export class DownloadConfig implements DownloadConfigOptions {
     this.fail_delay = options.fail_delay ?? DEFAULT_DOWNLOAD_CONFIG.fail_delay
     this.store_path = options.store_path ?? DEFAULT_DOWNLOAD_CONFIG.store_path
     this.with_tag = options.with_tag ?? DEFAULT_DOWNLOAD_CONFIG.with_tag
+    this.with_dictionary = options.with_dictionary ?? DEFAULT_DOWNLOAD_CONFIG.with_dictionary
     this.url_only = options.url_only ?? DEFAULT_DOWNLOAD_CONFIG.url_only
     this.num_concurrent = options.num_concurrent ?? DEFAULT_DOWNLOAD_CONFIG.num_concurrent
     this.start_delay = options.start_delay ?? DEFAULT_DOWNLOAD_CONFIG.start_delay

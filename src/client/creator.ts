@@ -1,4 +1,3 @@
-import type { Got } from 'got'
 import got from 'got'
 import { printObj } from '~/utils/printObj.ts'
 
@@ -32,10 +31,8 @@ function formatResponse(res: any) {
   }
 }
 
-export function createHttpClient({ showReqInfo, showResInfo }: HttpClientOptions): Got {
+export function createHttpClient({ showReqInfo, showResInfo }: HttpClientOptions) {
   return got.extend({
-    responseType: 'json',
-    throwHttpErrors: false,
     hooks: {
       beforeRequest: [
         (opts) => {
