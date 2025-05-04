@@ -5,7 +5,6 @@ import {
 } from './src'
 import { debug_config, displayAllConfigs, download_config, network_config, user_config } from './src/configs'
 import { DEFAULT_STORE_PATH } from './src/utils/constants.ts'
-import { ensurePath } from './src/utils/ensurePath.ts'
 
 async function bootstrap() {
   network_config.proxy = {}
@@ -20,8 +19,6 @@ async function bootstrap() {
   download_config.with_tag = false
 
   displayAllConfigs()
-
-  await ensurePath(download_config.store_path)
 
   await downloadUser({ artistId: '' })
 }

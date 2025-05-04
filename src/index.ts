@@ -14,8 +14,7 @@ import { printObj } from './utils/printObj.ts'
  *
  * @param options - 书签爬虫配置选项
  * @param options.imageNum - 要下载的图片数量
- * @param options.capacity - 最大下载器的容量，单位为 MB，默认为 1024。若不限制容量，则设置为 -1
- * @returns 不返回任何值的Promise
+ * @param options.capacity - 最大下载器的容量，单位为 MB，若为 -1，则不限制容量。默认为 -1。
  */
 export async function downloadBookmark({ imageNum, capacity }: BookmarkCrawlerOptions): Promise<void> {
   const targetCrawler = new BookmarkCrawler({ imageNum, capacity })
@@ -30,8 +29,7 @@ export async function downloadBookmark({ imageNum, capacity }: BookmarkCrawlerOp
  *
  * @param options - 用户爬虫配置选项
  * @param options.artistId - 要下载作品的艺术家 ID
- * @param options.capacity - 最大下载器的容量，单位为 MB，默认为 2048。若不限制容量，则设置为 -1
- * @returns 不返回任何值的Promise
+ * @param options.capacity - 最大下载器的容量，单位为 MB，若为 -1，则不限制容量。默认为 -1。
  */
 export async function downloadUser({ artistId, capacity }: UserCrawlerOptions): Promise<void> {
   const targetCrawler = new UserCrawler({ artistId, capacity })
@@ -55,8 +53,7 @@ export async function downloadUser({ artistId, capacity }: UserCrawlerOptions): 
  * @param options.order - 排序方式。'date' 表示按旧排序，'date_d' 表示按最新排序
  * @param options.mode - 搜索模式，'all' 表示全部，'safe' 表示安全，'r18' 表示 R-18
  * @param options.showAIWorks - 是否查询 AI 作品，默认为 true
- * @param options.capacity - 最大下载器的容量，单位为 MB，默认为 2048。若不限制容量，则设置为 -1
- * @returns 不返回任何值的Promise
+ * @param options.capacity - 最大下载器的容量，单位为 MB，若为 -1，则不限制容量。默认为 -1。
  */
 export async function downloadKeyword({ keyword, imageNum, order, mode, showAIWorks, capacity }: KeywordCrawlerOptions): Promise<void> {
   const targetCrawler = new KeywordCrawler({
