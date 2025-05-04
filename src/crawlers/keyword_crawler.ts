@@ -35,7 +35,7 @@ export class KeywordCrawler implements IKeywordCrawler {
   public downloader: Downloader
   public collector: Collector
 
-  constructor({ keyword, order, mode, imageNum, capacity = 1024 }: KeywordCrawlerOptions) {
+  constructor({ keyword, order, mode, imageNum, capacity = -1 }: KeywordCrawlerOptions) {
     this.keyword = keyword
     this.order = order
     this.mode = mode

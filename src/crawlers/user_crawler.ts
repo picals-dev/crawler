@@ -23,7 +23,7 @@ export class UserCrawler implements IUserCrawler {
   public downloader: Downloader
   public collector: Collector
 
-  constructor({ artistId, capacity = 2048 }: UserCrawlerOptions) {
+  constructor({ artistId, capacity = -1 }: UserCrawlerOptions) {
     this.artistId = artistId
     this.downloader = new Downloader(capacity)
     this.collector = new Collector(this.downloader)

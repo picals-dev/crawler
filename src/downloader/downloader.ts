@@ -8,13 +8,13 @@ import { printObj } from '~/utils/printObj.ts'
 import { downloadImage } from './download_image.ts'
 
 /**
- * Configuration for the Downloader class
+ * Downloader类的配置
  * @interface
  */
 interface DownloaderConfig {
-  /** The download capacity in MB. */
+  /** 下载容量，单位为MB。 */
   capacity: number
-  /** The url group to download. */
+  /** 要下载的URL组。 */
   urlGroup: Set<string>
 }
 
@@ -25,9 +25,9 @@ export class Downloader implements DownloaderConfig {
   public urlGroup: Set<string>
 
   /**
-   * Creates an instance of Downloader with the provided download capacity.
+   * 使用提供的下载容量创建Downloader实例。
    *
-   * @param capacity - The download capacity in MB.
+   * @param capacity - 下载容量，单位为MB。
    */
   constructor(capacity: number) {
     this.capacity = capacity
@@ -52,9 +52,9 @@ export class Downloader implements DownloaderConfig {
   }
 
   /**
-   * Add URLs to the download queue.
+   * 将URL添加到下载队列中。
    *
-   * @param urls - URLs to add to the download queue.
+   * @param urls - 要添加到下载队列的URL。
    */
   add(urls: string[]): void {
     for (const url of urls) {
@@ -63,9 +63,9 @@ export class Downloader implements DownloaderConfig {
   }
 
   /**
-   * Download images from the URL group.
+   * 从URL组下载图片。
    *
-   * @returns The total download traffic in MB.
+   * @returns 总下载流量，单位为MB。
    */
   async download() {
     if (download_config.url_only) {

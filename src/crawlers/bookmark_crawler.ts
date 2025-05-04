@@ -34,7 +34,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
   public downloader: Downloader
   public collector: Collector
 
-  constructor({ imageNum, capacity = 1024 }: BookmarkCrawlerOptions) {
+  constructor({ imageNum, capacity = -1 }: BookmarkCrawlerOptions) {
     this.imageNum = imageNum
     this.userId = user_config.user_id
     this.userUrl = `https://www.pixiv.net/ajax/user/${this.userId}/illusts`
