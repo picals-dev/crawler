@@ -1,6 +1,6 @@
 ## Picals-Crawler
 
-[![NPM Version](https://img.shields.io/npm/v/@hana/picals-crawler.svg)](https://www.npmjs.com/package/@hana/picals-crawler)
+[![NPM Version](https://img.shields.io/npm/v/@nonhana/picals-crawler.svg)](https://www.npmjs.com/package/@nonhana/picals-crawler)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18.0+-green.svg)](https://nodejs.org/)
@@ -15,17 +15,17 @@
 
 ### 安装
 
-在项目中安装 @hana/picals-crawler：
+在项目中安装 @nonhana/picals-crawler：
 
 ```bash
 # 使用 npm
-npm install @hana/picals-crawler
+npm install @nonhana/picals-crawler
 
 # 使用 yarn
-yarn add @hana/picals-crawler
+yarn add @nonhana/picals-crawler
 
 # 使用 pnpm（推荐）
-pnpm add @hana/picals-crawler
+pnpm add @nonhana/picals-crawler
 ```
 
 ### 前提条件
@@ -45,7 +45,7 @@ import {
   user_config, 
   network_config, 
   download_config 
-} from '@hana/picals-crawler'
+} from '@nonhana/picals-crawler'
 ```
 
 2. 设置必要的配置信息：
@@ -179,7 +179,7 @@ import {
   network_config, 
   user_config, 
   displayAllConfigs 
-} from '@hana/picals-crawler'
+} from '@nonhana/picals-crawler'
 
 async function main() {
   // 配置网络代理（如果需要）
@@ -219,7 +219,7 @@ main().catch(err => console.error('下载过程中发生错误:', err))
 ```ts
 // React组件示例
 import React, { useState } from 'react'
-import { downloadKeyword, download_config } from '@hana/picals-crawler'
+import { downloadKeyword, download_config } from '@nonhana/picals-crawler'
 
 const PixivDownloader = () => {
   const [keyword, setKeyword] = useState('')
