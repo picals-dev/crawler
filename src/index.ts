@@ -66,3 +66,5 @@ export async function downloadKeyword({ keyword, imageNum, order, mode, showAIWo
   })
   await targetCrawler.run()
 }
+
+export * from './configs/index.ts'
