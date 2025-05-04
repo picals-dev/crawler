@@ -6,11 +6,15 @@ import { download_config, user_config } from '~/configs/index.ts'
 import { Downloader } from '~/downloader/downloader.ts'
 import { printInfo } from '~/utils/logMessage.ts'
 
+type OrderType = 'date' | 'date_d'
+type ModeType = 'all' | 'safe' | 'r18'
+
 interface IKeywordCrawler {
   keyword: string
-  order: boolean
-  mode: string
   imageNum: number
+  order: OrderType
+  mode: ModeType
+  showAIWorks: boolean
   capacity: number
   downloader: Downloader
   collector: Collector
@@ -20,26 +24,29 @@ interface IKeywordCrawler {
 
 export interface KeywordCrawlerOptions {
   keyword: string
-  order: boolean
-  mode: string
   imageNum: number
+  order?: OrderType
+  mode?: ModeType
+  showAIWorks?: boolean
   capacity?: number
 }
 
 export class KeywordCrawler implements IKeywordCrawler {
   public keyword: string
-  public order: boolean
-  public mode: string
   public imageNum: number
+  public order: OrderType
+  public mode: ModeType
+  public showAIWorks: boolean
   public capacity: number
   public downloader: Downloader
   public collector: Collector
 
-  constructor({ keyword, order, mode, imageNum, capacity = -1 }: KeywordCrawlerOptions) {
+  constructor({ keyword, imageNum, order = 'date_d', mode = 'all', showAIWorks = true, capacity = -1 }: KeywordCrawlerOptions) {
     this.keyword = keyword
+    this.imageNum = imageNum
     this.order = order
     this.mode = mode
-    this.imageNum = imageNum
+    this.showAIWorks = showAIWorks
     this.capacity = capacity
     this.downloader = new Downloader(capacity)
     this.collector = new Collector(this.downloader)
@@ -60,6 +67,7 @@ export class KeywordCrawler implements IKeywordCrawler {
           `p=${page}`,
           `s_mode=s_tag`,
           `type=all`,
+          ...(this.showAIWorks ? [] : [`ai_type=1`]),
           `lang=zh`,
         ].join('&')}`
     )
