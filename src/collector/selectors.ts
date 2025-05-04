@@ -28,7 +28,7 @@ export const selectPage: Selector = (response) => {
   const group = new Set<string>()
 
   try {
-    const body = JSON.parse(response.body as string)
+    const body = typeof response.body === 'object' ? response.body : JSON.parse(response.body as string)
     if (!body || !body.body)
       return Array.from(group)
     for (const item of body.body) {
@@ -48,7 +48,7 @@ export const selectUser: Selector = (response) => {
   const group = new Set<string>()
 
   try {
-    const body = JSON.parse(response.body as string)
+    const body = typeof response.body === 'object' ? response.body : JSON.parse(response.body as string)
     if (body && body.body) {
       Object.keys(body.body.illusts).forEach(key => group.add(key))
     }
@@ -64,7 +64,7 @@ export const selectBookmark: Selector = (response) => {
   const group = new Set<string>()
 
   try {
-    const body = JSON.parse(response.body as string)
+    const body = typeof response.body === 'object' ? response.body : JSON.parse(response.body as string)
     if (!body || !body.body || !body.body.works)
       return Array.from(group)
     for (const artwork of body.body.works) {
@@ -88,7 +88,7 @@ export const selectKeyword: Selector = (response) => {
   const group = new Set<string>()
 
   try {
-    const body = JSON.parse(response.body as string)
+    const body = typeof response.body === 'object' ? response.body : JSON.parse(response.body as string)
     if (!body || !body.body || !body.body.illustManga || !body.body.illustManga.data)
       return Array.from(group)
     for (const artwork of body.body.illustManga.data) {

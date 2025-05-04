@@ -2,28 +2,52 @@ import type { Got } from 'got'
 import got from 'got'
 import { printObj } from '~/utils/printObj.ts'
 
+type DebugOption = boolean | (() => boolean)
+
 export interface HttpClientOptions {
-  debug?: boolean
+  showReqInfo?: DebugOption
+  showResInfo?: DebugOption
 }
 
-export function createHttpClient(options: HttpClientOptions = {}): Got {
-  const {
-    debug = false,
-  } = options
+function isDebugEnabled(debug?: DebugOption): boolean {
+  return typeof debug === 'function' ? debug() : !!debug
+}
 
+function formatRequest(opts: any) {
+  return {
+    method: opts.method,
+    url: opts.url?.toString?.() ?? opts.url,
+    headers: opts.headers,
+    ...(opts.searchParams ? { searchParams: opts.searchParams } : {}),
+    ...(opts.json ? { json: opts.json } : {}),
+    ...(opts.body ? { body: opts.body } : {}),
+  }
+}
+
+function formatResponse(res: any) {
+  return {
+    statusCode: res.statusCode,
+    headers: res.headers,
+    body: res.body,
+  }
+}
+
+export function createHttpClient({ showReqInfo, showResInfo }: HttpClientOptions): Got {
   return got.extend({
+    responseType: 'json',
+    throwHttpErrors: false,
     hooks: {
       beforeRequest: [
         (opts) => {
-          if (debug) {
-            printObj(opts, 2, '➡️  [Request]')
+          if (isDebugEnabled(showReqInfo)) {
+            printObj(formatRequest(opts), 2, '➡️  [Request]')
           }
         },
       ],
       afterResponse: [
         (res) => {
-          if (debug) {
-            printObj(res, 2, '⬅️  [Response]')
+          if (isDebugEnabled(showResInfo)) {
+            printObj(formatResponse(res), 2, '⬅️  [Response]')
           }
           return res
         },

@@ -53,7 +53,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
         const response = await client(url, { headers, agent: network_config.agent, timeout: { connect: download_config.timeout } })
 
         if (response.statusCode === StatusCodes.OK) {
-          const body = JSON.parse(response.body)
+          const body = typeof response.body === 'object' ? response.body : JSON.parse(response.body as string)
           const totalCount = body.body.public[0].cnt
           this.imageNum = Math.min(this.imageNum, Number.parseInt(totalCount))
           printInfo(`Select ${this.imageNum}/${totalCount} artworks`)

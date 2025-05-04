@@ -145,3 +145,6 @@ dist
 
 # local images
 images
+
+# tests
+main_test.ts
