@@ -1,7 +1,7 @@
 import { Collector } from '~/collector/collector.ts'
-import { collect } from '~/collector/collector_unit.ts'
+import { collect } from '~/collector/collectorUnit.ts'
 import { selectUser } from '~/collector/selectors.ts'
-import { user_config } from '~/configs/index.ts'
+import { userConfig } from '~/configs/index.ts'
 import { Downloader } from '~/downloader/downloader.ts'
 import { printInfo } from '~/utils/logMessage.ts'
 
@@ -34,8 +34,8 @@ export class UserCrawler implements IUserCrawler {
     const artistUrl = `https://www.pixiv.net/ajax/user/${this.artistId}/profile/all?lang=zh`
     const additionalHeaders = {
       'Referer': `https://www.pixiv.net/users/${this.artistId}/illustrations`,
-      'x-user-id': user_config.user_id,
-      'Cookie': user_config.cookie,
+      'x-user-id': userConfig.userId,
+      'Cookie': userConfig.cookie,
     }
     const imageIds = await collect(artistUrl, selectUser, additionalHeaders)
     if (imageIds) {

@@ -1,11 +1,11 @@
 import path from 'node:path'
 import pLimit from 'p-limit'
-import { debug_config, download_config } from '~/configs/index.ts'
+import { debugConfig, downloadConfig } from '~/configs/index.ts'
 import { ensurePath } from '~/utils/ensurePath.ts'
 import { handleError } from '~/utils/handleError.ts'
 import { printInfo } from '~/utils/logMessage.ts'
 import { printObj } from '~/utils/printObj.ts'
-import { downloadImage } from './download_image.ts'
+import { downloadImage } from './downloadImage.ts'
 
 /**
  * Downloader类的配置
@@ -68,7 +68,7 @@ export class Downloader implements DownloaderConfig {
    * @returns 总下载流量，单位为MB。
    */
   async download() {
-    if (download_config.url_only) {
+    if (downloadConfig.urlOnly) {
       return Array.from(this.urlGroup).reverse()
     }
 
@@ -76,30 +76,30 @@ export class Downloader implements DownloaderConfig {
 
     printInfo('========== Downloader start ==========')
 
-    const limit = pLimit(download_config.num_concurrent)
+    const limit = pLimit(downloadConfig.numConcurrent)
 
     const urls = Array.from(this.urlGroup).reverse()
-    if (debug_config.verbose) {
+    if (debugConfig.verbose) {
       printObj(urls, 2, 'Downloading URLs:')
     }
 
     // 提取出不止包含一张图片的作品 ID
     const worksNeedToDictionary = this._collectMultiImageWorks(urls)
 
-    if (debug_config.verbose && worksNeedToDictionary.length > 0) {
+    if (debugConfig.verbose && worksNeedToDictionary.length > 0) {
       printInfo(`找到了 ${worksNeedToDictionary.length} 个包含多张图片的作品`)
     }
 
     const tasks = urls.map(url =>
       limit(async () => {
         const workId = url.match(/\/(\d+)_p\d+\.[a-z]+$/i)?.[1] ?? ''
-        const targetPath = download_config.with_dictionary
+        const targetPath = downloadConfig.withDictionary
           ? worksNeedToDictionary.includes(workId)
-            ? path.join(download_config.store_path, workId)
-            : download_config.store_path
-          : download_config.store_path
+            ? path.join(downloadConfig.storePath, workId)
+            : downloadConfig.storePath
+          : downloadConfig.storePath
         await ensurePath(targetPath)
-        const imageSize = await downloadImage(url, download_config.max_timeout, targetPath)
+        const imageSize = await downloadImage(url, downloadConfig.maxTimeout, targetPath)
         downloadTraffic += imageSize
         printInfo(`Downloading: ${downloadTraffic.toFixed(2)} MB`)
         if (this.capacity !== -1 && downloadTraffic > this.capacity) {

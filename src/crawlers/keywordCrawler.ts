@@ -1,8 +1,8 @@
 import pLimit from 'p-limit'
 import { Collector } from '~/collector/collector.ts'
-import { collect } from '~/collector/collector_unit.ts'
+import { collect } from '~/collector/collectorUnit.ts'
 import { selectKeyword } from '~/collector/selectors.ts'
-import { download_config, user_config } from '~/configs/index.ts'
+import { downloadConfig, userConfig } from '~/configs/index.ts'
 import { Downloader } from '~/downloader/downloader.ts'
 import { printInfo } from '~/utils/logMessage.ts'
 
@@ -75,8 +75,8 @@ export class KeywordCrawler implements IKeywordCrawler {
       urls.push(createUrl(i))
     }
 
-    const additionalHeaders = { Cookie: user_config.cookie }
-    const limit = pLimit(download_config.num_concurrent)
+    const additionalHeaders = { Cookie: userConfig.cookie }
+    const limit = pLimit(downloadConfig.numConcurrent)
     const tasks = urls.map(url =>
       limit(async () => {
         const imageIds = await collect(url, selectKeyword, additionalHeaders)

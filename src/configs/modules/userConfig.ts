@@ -4,7 +4,7 @@
  */
 interface UserConfigOptions {
   /** 用户 ID，在个人资料 URL 中找到（例如，https://www.pixiv.net/users/xxxx）。 */
-  user_id?: string
+  userId?: string
 
   /** 认证 cookie，可通过浏览器开发者工具获取，或为空。 */
   cookie?: string
@@ -19,7 +19,7 @@ interface UserConfigOptions {
  */
 export class UserConfig implements UserConfigOptions {
   /** @inheritdoc */
-  public user_id: string
+  public userId: string
 
   /** @inheritdoc */
   public cookie: string
@@ -30,7 +30,7 @@ export class UserConfig implements UserConfigOptions {
    * @param {UserConfigOptions} options - 包含用户 ID 和 cookie 的配置选项。
    */
   constructor(options: UserConfigOptions = {}) {
-    this.user_id = options.user_id ?? ''
+    this.userId = options.userId ?? ''
     this.cookie = options.cookie ?? ''
   }
 }

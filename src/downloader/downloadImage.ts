@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { StatusCodes } from 'http-status-codes'
 import { client } from '~/client/index.ts'
-import { debug_config, download_config, network_config } from '~/configs/index.ts'
+import { debugConfig, downloadConfig, networkConfig } from '~/configs/index.ts'
 import { checkPath } from '~/utils/checkPath.ts'
 import { handleError } from '~/utils/handleError.ts'
 import { printInfo, printWarn } from '~/utils/logMessage.ts'
@@ -25,29 +25,29 @@ export async function downloadImage(url: string, initialTimeout: number = 10000,
   const imageId = regRes![1]
   const headers = {
     Referer: `https://www.pixiv.net/artworks/${imageId}`,
-    ...network_config.headers,
+    ...networkConfig.headers,
   }
 
-  if (debug_config.verbose) {
+  if (debugConfig.verbose) {
     printInfo(`Downloading image: ${imageName}`)
   }
 
-  await sleep(download_config.start_delay)
+  await sleep(downloadConfig.startDelay)
 
   // 3. 检查图片是否已经存在
   const imagePath = path.join(targetPath, imageName!)
-  if (debug_config.verbose) {
+  if (debugConfig.verbose) {
     printInfo(`当前图片的保存路径为：${imagePath}`)
   }
   const checkPathRes = await checkPath(imagePath)
   if (checkPathRes.exists) {
-    printWarn(debug_config.verbose, `Image ${imageName} already exists, skipping...`)
+    printWarn(debugConfig.verbose, `Image ${imageName} already exists, skipping...`)
     return 0
   }
 
   let downloadTimeout = initialTimeout
 
-  for (let attempt = 0; attempt < download_config.retry_times; attempt++) {
+  for (let attempt = 0; attempt < downloadConfig.retryTimes; attempt++) {
     try {
       const controller = new AbortController()
       // 如果下载时间过长则中断下载
@@ -55,8 +55,8 @@ export async function downloadImage(url: string, initialTimeout: number = 10000,
 
       const response = await client(url, {
         headers,
-        agent: network_config.agent,
-        timeout: { connect: download_config.timeout },
+        agent: networkConfig.agent,
+        timeout: { connect: downloadConfig.timeout },
         signal: controller.signal,
         retry: { limit: 0 },
       })
@@ -67,39 +67,39 @@ export async function downloadImage(url: string, initialTimeout: number = 10000,
 
         // 检查图片大小是否正确
         if (imageSize > 0 && response.rawBody.length !== imageSize) {
-          printWarn(debug_config.show_error, `Image ${imageName} is incomplete, retrying...`)
-          await sleep(download_config.fail_delay)
-          downloadTimeout = Math.min(downloadTimeout * 2, download_config.max_timeout)
+          printWarn(debugConfig.showError, `Image ${imageName} is incomplete, retrying...`)
+          await sleep(downloadConfig.failDelay)
+          downloadTimeout = Math.min(downloadTimeout * 2, downloadConfig.maxTimeout)
           continue
         }
 
         await fs.writeFile(imagePath, response.rawBody)
-        if (debug_config.verbose) {
+        if (debugConfig.verbose) {
           printInfo(`Image downloaded: ${imageName}`)
         }
 
         return imageSize / (2 ** 20)
       }
       else {
-        printWarn(debug_config.verbose, `The status code is not 200: ${response.statusCode}, retrying...`)
+        printWarn(debugConfig.verbose, `The status code is not 200: ${response.statusCode}, retrying...`)
       }
     }
     catch (error: any) {
       if (error.name === 'AbortError') {
-        printWarn(debug_config.show_error, `Download timeout: ${imageName}`)
+        printWarn(debugConfig.showError, `Download timeout: ${imageName}`)
       }
       else {
-        printWarn(debug_config.show_error, error.message || 'Unknown error')
+        printWarn(debugConfig.showError, error.message || 'Unknown error')
       }
-      printWarn(debug_config.show_error, `This is ${attempt + 1} attempt to download image: ${imageName}`)
-      await sleep(download_config.fail_delay)
+      printWarn(debugConfig.showError, `This is ${attempt + 1} attempt to download image: ${imageName}`)
+      await sleep(downloadConfig.failDelay)
       if (error.name === 'AbortError') {
-        downloadTimeout = Math.min(downloadTimeout * 2, download_config.max_timeout)
+        downloadTimeout = Math.min(downloadTimeout * 2, downloadConfig.maxTimeout)
       }
     }
   }
 
-  printWarn(debug_config.show_error, `Failed to download image: ${imageName}`)
+  printWarn(debugConfig.showError, `Failed to download image: ${imageName}`)
   writeFailLog(`Download failed: ${imageName}, URL: ${url}`)
   return 0
 }

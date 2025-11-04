@@ -6,11 +6,11 @@ interface DebugConfigOptions {
   /** 是否启用详细日志。 */
   verbose?: boolean
   /** 是否显示错误消息。 */
-  show_error?: boolean
+  showError?: boolean
   /** 是否显示每次请求的详细信息 */
-  show_req_info?: boolean
+  showReqInfo?: boolean
   /** 是否显示每次响应的详细信息 */
-  show_res_info?: boolean
+  showResInfo?: boolean
 }
 
 /**
@@ -24,11 +24,11 @@ export class DebugConfig implements DebugConfigOptions {
   /** @inheritdoc */
   public verbose: boolean
   /** @inheritdoc */
-  public show_error: boolean
+  public showError: boolean
   /** @inheritdoc */
-  public show_req_info: boolean
+  public showReqInfo: boolean
   /** @inheritdoc */
-  public show_res_info: boolean
+  public showResInfo: boolean
 
   /**
    * 创建一个 DebugConfig 实例，并使用提供的选项配置。
@@ -37,8 +37,8 @@ export class DebugConfig implements DebugConfigOptions {
    */
   constructor(options: DebugConfigOptions = {}) {
     this.verbose = options.verbose ?? false
-    this.show_error = options.show_error ?? false
-    this.show_req_info = options.show_req_info ?? false
-    this.show_res_info = options.show_res_info ?? false
+    this.showError = options.showError ?? false
+    this.showReqInfo = options.showReqInfo ?? false
+    this.showResInfo = options.showResInfo ?? false
   }
 }

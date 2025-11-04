@@ -2,11 +2,11 @@ import type { Downloader } from '~/downloader/downloader.ts'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import pLimit from 'p-limit'
-import { debug_config, download_config, user_config } from '~/configs/index.ts'
+import { debugConfig, downloadConfig, userConfig } from '~/configs/index.ts'
 import { BOOKMARK_URL } from '~/utils/constants.ts'
 import { handleError } from '~/utils/handleError.ts'
 import { printInfo } from '~/utils/logMessage.ts'
-import { collect } from './collector_unit.ts'
+import { collect } from './collectorUnit.ts'
 import { selectPage, selectTag } from './selectors.ts'
 
 interface ICollector {
@@ -44,12 +44,12 @@ export class Collector implements ICollector {
       url: `https://www.pixiv.net/artworks/${illustId}`,
     }))
 
-    const limit = pLimit(download_config.num_concurrent)
+    const limit = pLimit(downloadConfig.numConcurrent)
     const tasks = urls.map(({ illustId, url }) =>
       limit(async () => {
         try {
           const tagList = await collect(url, selectTag, additionalHeaders)
-          if (debug_config.verbose) {
+          if (debugConfig.verbose) {
             printInfo(`Tags collected for ${illustId}`)
           }
           return { illustId, tagList }
@@ -68,14 +68,14 @@ export class Collector implements ICollector {
       }
     }
 
-    const filePath = path.join(download_config.store_path, fileName)
+    const filePath = path.join(downloadConfig.storePath, fileName)
     await fs.writeFile(filePath, JSON.stringify(tags, null, 2), 'utf-8')
 
     printInfo('========== Tag collector end ==========')
   }
 
   async collect() {
-    if (download_config.with_tag) {
+    if (downloadConfig.withTag) {
       await this.collectTags()
     }
 
@@ -89,11 +89,11 @@ export class Collector implements ICollector {
     }))
     const additionalHeaders = artworkIds.map(illustId => ({
       'Referer': `https://www.pixiv.net/artworks/${illustId}`,
-      'x-user-id': user_config.user_id,
-      'Cookie': user_config.cookie,
+      'x-user-id': userConfig.userId,
+      'Cookie': userConfig.cookie,
     }))
 
-    const limit = pLimit(download_config.num_concurrent)
+    const limit = pLimit(downloadConfig.numConcurrent)
     const tasks = urls.map(({ illustId, url }, index) =>
       limit(async () => {
         try {

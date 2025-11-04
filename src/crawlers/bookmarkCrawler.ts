@@ -1,8 +1,8 @@
 import pLimit from 'p-limit'
 import { Collector } from '~/collector/collector.ts'
-import { collect } from '~/collector/collector_unit.ts'
+import { collect } from '~/collector/collectorUnit.ts'
 import { selectBookmark } from '~/collector/selectors.ts'
-import { download_config, user_config } from '~/configs/index.ts'
+import { downloadConfig, userConfig } from '~/configs/index.ts'
 import { Downloader } from '~/downloader/downloader.ts'
 import { handleError } from '~/utils/handleError.ts'
 import { printInfo } from '~/utils/logMessage.ts'
@@ -31,7 +31,7 @@ export class BookmarkCrawler implements IBookmarkCrawler {
 
   constructor({ imageNum, capacity = -1 }: BookmarkCrawlerOptions) {
     this.imageNum = imageNum
-    this.userId = user_config.user_id
+    this.userId = userConfig.userId
     this.userUrl = `https://www.pixiv.net/ajax/user/${this.userId}/illusts`
     this.downloader = new Downloader(capacity)
     this.collector = new Collector(this.downloader)
@@ -51,9 +51,9 @@ export class BookmarkCrawler implements IBookmarkCrawler {
         Math.min(perJsonWorkCount, this.imageNum - i * perJsonWorkCount)
       }&rest=show&lang=zh`
       urls.add(url)
-      const additionalHeaders = { Cookie: user_config.cookie }
+      const additionalHeaders = { Cookie: userConfig.cookie }
 
-      const limit = pLimit(download_config.num_concurrent)
+      const limit = pLimit(downloadConfig.numConcurrent)
       const tasks = Array.from(urls).map(url =>
         limit(async () => {
           try {

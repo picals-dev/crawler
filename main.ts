@@ -3,20 +3,20 @@ import {
   // downloadKeyword,
   downloadUser,
 } from './src'
-import { debug_config, displayAllConfigs, download_config, network_config, user_config } from './src/configs'
+import { debugConfig, displayAllConfigs, downloadConfig, networkConfig, userConfig } from './src/configs'
 import { DEFAULT_STORE_PATH } from './src/utils/constants.ts'
 
 async function bootstrap() {
-  network_config.proxy = {}
+  networkConfig.proxy = {}
 
-  debug_config.verbose = true
-  debug_config.show_error = false
+  debugConfig.verbose = true
+  debugConfig.showError = false
 
-  user_config.user_id = ''
-  user_config.cookie = ''
+  userConfig.userId = ''
+  userConfig.cookie = ''
 
-  download_config.store_path = `${DEFAULT_STORE_PATH}`
-  download_config.with_tag = false
+  downloadConfig.storePath = `${DEFAULT_STORE_PATH}`
+  downloadConfig.withTag = false
 
   displayAllConfigs()
 
